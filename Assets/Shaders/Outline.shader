@@ -1,86 +1,72 @@
-Shader "Custom/AlwaysVisibleOutline"
+﻿Shader "Custom/URP/OutlineOnlyAlways"
 {
     Properties
     {
-        _MainTex ("Albedo", 2D) = "white" {}
-        _Color ("Base Color", Color) = (1,1,1,1)
         _OutlineColor ("Outline Color", Color) = (1,0.5,0,1)
-        _OutlineWidth ("Outline Width", Float) = 0.03
+        _OutlineWidth ("Outline Width (World Units)", Float) = 0.08
     }
 
     SubShader
     {
-        // Draw after opaques so depth buffer is filled; outline uses ZTest Greater to avoid covering front faces.
-        Tags { "Queue"="Geometry+10" "RenderType"="Opaque" }
-        LOD 100
-
-        CGINCLUDE
-        #include "UnityCG.cginc"
-
-        struct appdataBase { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
-        struct v2fBase { float2 uv:TEXCOORD0; float4 pos:SV_POSITION; };
-
-        struct appdataOutline { float4 vertex:POSITION; float3 normal:NORMAL; };
-        struct v2fOutline { float4 pos:SV_POSITION; };
-
-        sampler2D _MainTex; float4 _MainTex_ST; float4 _Color;
-        float4 _OutlineColor;
-        float _OutlineWidth; // world units
-
-        v2fBase vertBase(appdataBase v)
+        Tags
         {
-            v2fBase o;
-            o.pos = UnityObjectToClipPos(v.vertex);
-            o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-            return o;
+            "RenderPipeline"="UniversalRenderPipeline"
+            "RenderType"="Transparent"
+            "Queue"="Transparent+50"
         }
 
-        fixed4 fragBase(v2fBase i) : SV_Target
+        HLSLINCLUDE
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+        CBUFFER_START(UnityPerMaterial)
+            float4 _OutlineColor;
+            float  _OutlineWidth;
+        CBUFFER_END
+
+        struct Attributes
         {
-            fixed4 col = tex2D(_MainTex, i.uv) * _Color;
-            col.a = 1;
-            return col;
+            float3 positionOS : POSITION;
+            float3 normalOS   : NORMAL;
+        };
+
+        struct Varyings
+        {
+            float4 positionHCS : SV_POSITION;
+        };
+
+        Varyings Vert(Attributes IN)
+        {
+            Varyings OUT;
+
+            float3 posWS  = TransformObjectToWorld(IN.positionOS);
+            float3 normWS = normalize(TransformObjectToWorldNormal(IN.normalOS));
+
+            posWS += normWS * _OutlineWidth;
+
+            OUT.positionHCS = TransformWorldToHClip(posWS);
+            return OUT;
         }
 
-        v2fOutline vertOutline(appdataOutline v)
+        half4 Frag(Varyings IN) : SV_Target
         {
-            // Expand in world space along normals; depth test Greater prevents covering front faces.
-            float3 wPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-            float3 wNorm = normalize(UnityObjectToWorldNormal(v.normal));
-            wPos += wNorm * _OutlineWidth;
-            v2fOutline o; o.pos = UnityWorldToClipPos(wPos); return o;
+            return half4(_OutlineColor.rgb, _OutlineColor.a);
         }
+        ENDHLSL
 
-        fixed4 fragOutline(v2fOutline i) : SV_Target
-        {
-            return _OutlineColor;
-        }
-        ENDCG
-
-        // Pass 1: outline rendered behind the object (only where depth is farther)
         Pass
         {
-            Cull Back
+            Name "OutlineOnly"
+            Tags { "LightMode"="SRPDefaultUnlit" }
+
+            Cull Off
             ZWrite Off
-            ZTest Greater
+            ZTest Always
             Blend SrcAlpha OneMinusSrcAlpha
-            CGPROGRAM
-            #pragma vertex vertOutline
-            #pragma fragment fragOutline
-            ENDCG
-        }
 
-        // Pass 2: base mesh (opaque)
-        Pass
-        {
-            Cull Back
-            ZWrite On
-            ZTest LEqual
-            Blend Off
-            CGPROGRAM
-            #pragma vertex vertBase
-            #pragma fragment fragBase
-            ENDCG
+            HLSLPROGRAM
+            #pragma vertex Vert
+            #pragma fragment Frag
+            ENDHLSL
         }
     }
 }
