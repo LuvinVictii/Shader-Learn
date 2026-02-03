@@ -271,6 +271,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   rotationSpeed: 100
+  sprintMultiplier: 2
+  holdRightMouseToLook: 1
+  mouseSensitivity: 3
+  maxPitch: 80
+  lockCursorWhileLooking: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,6 +518,75 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1496003081}
   m_SourcePrefab: {fileID: 100100000, guid: ca2f9bb207b10ed438ac1349ffc6c820, type: 3}
+--- !u!1001 &1161672990
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 658640958919042699, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fc1e013d694fc0542b1e1392675b3818, type: 2}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 700172422386595093, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6336798667187042129, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fc1e013d694fc0542b1e1392675b3818, type: 2}
+    - target: {fileID: 7978282978792705059, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fc1e013d694fc0542b1e1392675b3818, type: 2}
+    - target: {fileID: 8149329198172807351, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
+      propertyPath: m_Name
+      value: EA_Characters_Gargoyle_Clean_01a_PRE (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5f5e53b68ad4e2047abeb5d0bf5cc066, type: 3}
 --- !u!1 &1496003077 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4214344242815115784, guid: ca2f9bb207b10ed438ac1349ffc6c820, type: 3}
@@ -627,4 +701,5 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 2135016688}
+  - {fileID: 1161672990}
   - {fileID: 1030303765}
