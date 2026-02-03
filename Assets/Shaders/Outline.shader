@@ -4,17 +4,25 @@ Shader "Unlit/SeeThroughOutline"
     {
         _MainTex ("Albedo", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
-        _OutlineColor ("Outline Color", Color) = (0,1,1,1)
-        _OutlineWidth ("Outline Width", Float) = 0.02
+        _OutlineColor ("Outline Color", Color) = (1,0.5,0,1)
+        _OutlineWidth ("Outline Width", Float) = 0.025
         _HiddenBoost ("Hidden Outline Scale", Float) = 1.5
     }
     SubShader
     {
-        // Render after standard geometry so depth contains occluders, but before transparents.
-        Tags { "Queue"="Geometry+1" "RenderType"="Opaque" }
+        // Render after opaque geometry so depth contains occluders, but before transparents.
+        Tags { "Queue"="Geometry+10" "RenderType"="Opaque" }
         Cull Back
 
-        // Pass 1: normal unlit textured surface (writes depth)
+        // Pass 1: depth-only prepass to ensure correct depth for this object
+        Pass
+        {
+            Tags { "LightMode"="DepthOnly" }
+            ZWrite On
+            ColorMask 0
+        }
+
+        // Pass 2: normal unlit textured surface (opaque)
         Pass
         {
             ZWrite On
@@ -45,12 +53,13 @@ Shader "Unlit/SeeThroughOutline"
             ENDCG
         }
 
-        // Pass 2: outline when occluded (shows through other geometry)
+        // Pass 3: outline when occluded (shows through other geometry)
         Pass
         {
             ZWrite Off
             ZTest Greater
             Cull Front
+            Offset -1,-1
             Blend SrcAlpha OneMinusSrcAlpha
             CGPROGRAM
             #pragma vertex vert
@@ -76,12 +85,13 @@ Shader "Unlit/SeeThroughOutline"
             ENDCG
         }
 
-        // Pass 3: visible outline on top of mesh edges
+        // Pass 4: visible outline on top of mesh edges
         Pass
         {
             ZWrite Off
             ZTest LEqual
             Cull Front
+            Offset -1,-1
             Blend SrcAlpha OneMinusSrcAlpha
             CGPROGRAM
             #pragma vertex vert

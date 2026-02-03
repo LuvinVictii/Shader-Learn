@@ -3,6 +3,8 @@ Shader "Unlit/ExplosionSlicer"
     Properties
     {
         _Explode ("Explosion Distance", Float) = 0.2
+        _MainTex ("Albedo", 2D) = "white" {}
+        _Color ("Color Tint", Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -23,15 +25,18 @@ Shader "Unlit/ExplosionSlicer"
             {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
                 float4 pos : SV_POSITION;
-                float3 wNormal : TEXCOORD0;
+                float2 uv  : TEXCOORD0;
+                float3 wNormal : TEXCOORD1;
             };
 
             float _Explode;
+            sampler2D _MainTex; float4 _MainTex_ST; float4 _Color;
 
             v2f vert(appdata v)
             {
@@ -40,15 +45,16 @@ Shader "Unlit/ExplosionSlicer"
 
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.wNormal = UnityObjectToWorldNormal(v.normal);
                 return o;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                // Visualize the original normal as color (remap -1..1 to 0..1)
-                float3 n = normalize(i.wNormal);
-                return fixed4(n * 0.5f + 0.5f, 1.0f);
+                fixed4 albedo = tex2D(_MainTex, i.uv) * _Color;
+                albedo.a = 1;
+                return albedo;
             }
             ENDCG
         }
