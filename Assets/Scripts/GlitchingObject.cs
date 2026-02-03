@@ -4,7 +4,7 @@ public class GlitchingObject : MonoBehaviour
 {
     [Header("Rotation Settings")]
     public float rotationSpeed = 100f;
-    
+
     [Header("Glitch Settings")]
     public Material hologramMaterial;
     public float glitchIntensity = 1.0f;    
